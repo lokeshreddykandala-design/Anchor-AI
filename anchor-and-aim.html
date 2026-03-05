@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anchor&Aim — Chartered Accountants</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Serif Display', Georgia, serif; background: #0a0a0a; color: #f0ece4; overflow-x: hidden; }
+    ::selection { background: #c9a84c; color: #0a0a0a; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #c9a84c; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between; transition: background 0.3s, border-color 0.3s; }
+    nav.scrolled { background: rgba(10,10,10,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,168,76,0.1); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-box { width: 28px; height: 28px; border: 1px solid #c9a84c; display: grid; place-items: center; }
+    .nav-logo-dot { width: 10px; height: 10px; background: #c9a84c; }
+    .nav-logo-text { font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.1em; color: #f0ece4; }
+    .nav-links { display: flex; gap: 36px; align-items: center; }
+    .nav-link { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #a09880; cursor: pointer; background: none; border: none; transition: color 0.2s; text-decoration: none; }
+    .nav-link:hover { color: #c9a84c; }
+
+    /* BUTTONS */
+    .btn-primary { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; background: #c9a84c; color: #0a0a0a; border: none; padding: 16px 36px; cursor: pointer; transition: background 0.2s, transform 0.15s; font-weight: 500; text-decoration: none; display: inline-block; }
+    .btn-primary:hover { background: #e0bf66; transform: translateY(-2px); }
+    .btn-primary.sm { padding: 10px 24px; font-size: 11px; }
+    .btn-ghost { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; background: transparent; color: #a09880; border: 1px solid rgba(160,152,128,0.35); padding: 15px 36px; cursor: pointer; transition: border-color 0.2s, color 0.2s; text-decoration: none; display: inline-block; }
+    .btn-ghost:hover { border-color: #c9a84c; color: #c9a84c; }
+
+    /* HERO */
+    .hero { min-height: 100vh; display: flex; align-items: center; position: relative; padding: 120px 40px 80px; }
+    .hero-bg { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(ellipse 80% 60% at 60% 40%, #1a1408 0%, #0a0a0a 70%); }
+    .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(201,168,76,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.07) 1px, transparent 1px); background-size: 60px 60px; -webkit-mask-image: radial-gradient(ellipse 70% 70% at 60% 50%, black 30%, transparent 100%); mask-image: radial-gradient(ellipse 70% 70% at 60% 50%, black 30%, transparent 100%); }
+    .hero-line { position: absolute; background: linear-gradient(90deg, transparent, #c9a84c, transparent); height: 1px; width: 100%; animation: scanline 4s ease-in-out infinite; opacity: 0.4; }
+    @keyframes scanline { 0% { top: 10%; opacity: 0; } 20% { opacity: 0.4; } 80% { opacity: 0.4; } 100% { top: 90%; opacity: 0; } }
+    .hero-inner { position: relative; max-width: 1200px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .gold-tag { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #c9a84c; border: 1px solid rgba(201,168,76,0.35); padding: 6px 16px; display: inline-block; }
+    .headline { font-size: clamp(3rem, 7vw, 6rem); line-height: 0.95; letter-spacing: -0.02em; font-weight: 400; margin-top: 28px; }
+    .headline em { font-style: italic; color: #c9a84c; }
+    .hero-sub { font-family: 'DM Mono', monospace; font-size: 14px; line-height: 1.8; color: #7a7468; font-weight: 300; margin-top: 24px; max-width: 420px; }
+    .hero-ctas { margin-top: 44px; display: flex; gap: 16px; flex-wrap: wrap; }
+    .stat-box { position: relative; padding: 48px 44px; border: 1px solid rgba(201,168,76,0.15); }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; }
+    .stat-num { font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 400; color: #c9a84c; line-height: 1; }
+    .stat-label { font-family: 'DM Mono', monospace; font-size: 11px; color: #5a5448; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 6px; }
+    .stat-footer { margin-top: 44px; padding-top: 32px; border-top: 1px solid rgba(201,168,76,0.1); font-family: 'DM Mono', monospace; font-size: 12px; color: #5a5448; }
+    .corner { position: absolute; width: 14px; height: 14px; border-color: rgba(201,168,76,0.4); border-style: solid; }
+    .c-tl { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+    .c-tr { top: -1px; right: -1px; border-width: 1px 1px 0 0; }
+    .c-bl { bottom: -1px; left: -1px; border-width: 0 0 1px 1px; }
+    .c-br { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent); }
+
+    /* SECTIONS */
+    .section { padding: 100px 40px; max-width: 1200px; margin: 0 auto; }
+    .section-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #c9a84c; margin-bottom: 16px; }
+    .section-title { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.05; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 52px; }
+    .section-title em { font-style: italic; color: #c9a84c; }
+
+    /* SERVICES */
+    .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: rgba(201,168,76,0.08); }
+    .service-card { border: 1px solid rgba(201,168,76,0.12); padding: 36px 28px; background: #0a0a0a; transition: border-color 0.3s, background 0.3s; }
+    .service-card:hover { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.02); }
+    .service-icon { font-size: 28px; color: #c9a84c; margin-bottom: 20px; display: block; }
+    .service-title { font-size: 1.2rem; margin-bottom: 10px; color: #f0ece4; }
+    .service-desc { font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.75; color: #6a6458; font-weight: 300; margin-bottom: 16px; }
+    .service-points { display: flex; flex-direction: column; gap: 7px; }
+    .service-point { display: flex; align-items: flex-start; gap: 8px; }
+    .service-point-arrow { color: #c9a84c; font-size: 10px; margin-top: 3px; flex-shrink: 0; }
+    .service-point-text { font-family: 'DM Mono', monospace; font-size: 11px; color: #5a5448; line-height: 1.6; }
+
+    /* TEAM */
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .team-card { border: 1px solid rgba(201,168,76,0.12); padding: 40px 32px; background: #0a0a0a; transition: border-color 0.3s; }
+    .team-card:hover { border-color: rgba(201,168,76,0.4); }
+    .team-avatar { width: 56px; height: 56px; border: 1px solid rgba(201,168,76,0.3); display: grid; place-items: center; margin-bottom: 24px; }
+    .team-avatar span { font-family: 'DM Mono', monospace; font-size: 22px; color: #c9a84c; }
+    .team-name { font-size: 1.15rem; color: #f0ece4; margin-bottom: 6px; }
+    .team-role { font-family: 'DM Mono', monospace; font-size: 12px; color: #7a7468; margin-bottom: 20px; }
+    .team-quals { display: flex; flex-wrap: wrap; gap: 8px; }
+    .team-qual { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #c9a84c; border: 1px solid rgba(201,168,76,0.25); padding: 4px 10px; }
+
+    /* PRICING */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .pricing-card { border: 1px solid rgba(201,168,76,0.12); padding: 44px 36px; position: relative; transition: transform 0.3s; }
+    .pricing-card:hover { transform: translateY(-6px); }
+    .pricing-card.highlight { border-color: #c9a84c; background: rgba(201,168,76,0.04); }
+    .pricing-badge { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); background: #c9a84c; color: #0a0a0a; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; padding: 4px 16px; text-transform: uppercase; white-space: nowrap; }
+    .price-tier { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #c9a84c; margin-bottom: 8px; }
+    .price-row { display: flex; align-items: baseline; gap: 6px; }
+    .price-amount { font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 400; color: #f0ece4; line-height: 1; }
+    .price-period { font-family: 'DM Mono', monospace; font-size: 13px; color: #5a5448; }
+    .price-tag { font-family: 'DM Mono', monospace; font-size: 12px; color: #6a6458; margin: 14px 0 28px; }
+    .price-features { margin-bottom: 32px; }
+    .price-feature { font-family: 'DM Mono', monospace; font-size: 12px; color: #8a8478; padding: 10px 0; border-bottom: 1px solid rgba(201,168,76,0.07); display: flex; align-items: center; gap: 10px; }
+    .price-feature::before { content: '—'; color: #c9a84c; }
+
+    /* CONTACT */
+    .contact-section { padding: 100px 40px; }
+    .contact-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: start; }
+    .contact-sub { font-family: 'DM Mono', monospace; font-size: 14px; line-height: 1.8; color: #7a7468; font-weight: 300; margin-bottom: 48px; }
+    .contact-details { display: flex; flex-direction: column; gap: 28px; }
+    .contact-item { display: flex; gap: 18px; align-items: flex-start; }
+    .contact-icon { color: #c9a84c; font-size: 18px; margin-top: 2px; }
+    .contact-label { font-family: 'DM Mono', monospace; font-size: 11px; color: #5a5448; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+    .contact-value { font-family: 'DM Mono', monospace; font-size: 13px; color: #a09880; white-space: pre-line; }
+    .contact-form { position: relative; padding: 48px 44px; border: 1px solid rgba(201,168,76,0.15); }
+    .form-group { margin-bottom: 32px; }
+    .form-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(201,168,76,0.2); color: #f0ece4; font-family: 'DM Mono', monospace; font-size: 14px; padding: 14px 0; outline: none; transition: border-color 0.2s; }
+    .form-input:focus { border-color: #c9a84c; }
+    .form-input::placeholder { color: #3a3428; }
+    textarea.form-input { resize: none; }
+    .success-box { border: 1px solid rgba(201,168,76,0.3); padding: 48px; text-align: center; display: none; }
+    .success-icon { font-size: 48px; color: #c9a84c; margin-bottom: 20px; }
+    .success-title { font-size: 1.8rem; margin-bottom: 12px; }
+    .success-text { font-family: 'DM Mono', monospace; font-size: 13px; color: #7a7468; }
+
+    /* FOOTER */
+    footer { border-top: 1px solid rgba(201,168,76,0.1); padding: 32px 40px; display: flex; justify-content: space-between; align-items: center; }
+    .footer-left { font-family: 'DM Mono', monospace; font-size: 11px; color: #3a3428; letter-spacing: 0.1em; }
+    .footer-right { font-family: 'DM Mono', monospace; font-size: 11px; color: #3a3428; letter-spacing: 0.08em; }
+
+    /* ANIMATIONS */
+    .fade-up { opacity: 0; transform: translateY(24px); }
+    .fade-up.visible { animation: fadeUp 0.8s ease forwards; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .hero-fade-1 { opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards; }
+    .hero-fade-2 { opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards; }
+    .hero-fade-3 { opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards; }
+    .hero-fade-4 { opacity: 0; animation: fadeUp 0.8s ease 0.8s forwards; }
+    .hero-fade-5 { opacity: 0; animation: fadeUp 0.8s ease 0.5s forwards; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a class="nav-logo" href="#">
+      <div class="nav-logo-box"><div class="nav-logo-dot"></div></div>
+      <span class="nav-logo-text">ANCHOR&AIM</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#services">Services</a>
+      <a class="nav-link" href="#team">Team</a>
+      <a class="nav-link" href="#pricing">Pricing</a>
+      <a class="nav-link" href="#contact">Contact</a>
+      <a class="btn-primary sm" href="#contact">Book a Call</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-grid"></div>
+      <div class="hero-line"></div>
+    </div>
+    <div class="hero-inner">
+      <div>
+        <div class="hero-fade-1"><span class="gold-tag">Anchor&Aim · Chartered Accountants · Est. 2024</span></div>
+        <div class="hero-fade-2">
+          <h1 class="headline">Numbers that<br><em>tell the truth.</em><br>Advice that<br>builds wealth.</h1>
+        </div>
+        <div class="hero-fade-3">
+          <p class="hero-sub">We bring precision, strategy, and expertise to help individuals and businesses navigate finances with absolute clarity.</p>
+        </div>
+        <div class="hero-ctas hero-fade-4">
+          <a class="btn-primary" href="#contact">Get a Free Consultation</a>
+          <a class="btn-ghost" href="#services">Our Services</a>
+        </div>
+      </div>
+      <div class="hero-fade-5">
+        <div class="stat-box">
+          <div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div>
+          <div class="stat-grid">
+            <div><div class="stat-num">6+</div><div class="stat-label">Years of Practice</div></div>
+            <div><div class="stat-num">150+</div><div class="stat-label">Clients Served</div></div>
+            <div><div class="stat-num">₹5Cr+</div><div class="stat-label">Tax Savings Delivered</div></div>
+            <div><div class="stat-num">4.9★</div><div class="stat-label">Client Satisfaction</div></div>
+          </div>
+          <div class="stat-footer">ICAI Registered · GST Practitioner · Recognized by MCA</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SERVICES -->
+  <section class="section" id="services">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-title">Financial services<br>built on <em>expertise.</em></h2>
+    <div class="services-grid">
+
+      <div class="service-card fade-up">
+        <span class="service-icon">◭</span>
+        <h3 class="service-title">Bookkeeping</h3>
+        <p class="service-desc">Meticulous monthly bookkeeping that gives you a real-time snapshot of your financial health, always.</p>
+        <div class="service-points">
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Accounts payable & receivable management</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Bank & credit card reconciliation</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Monthly P&L and balance sheet preparation</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Cloud-based bookkeeping via Tally / Zoho Books</span></div>
+        </div>
+      </div>
+
+      <div class="service-card fade-up">
+        <span class="service-icon">◉</span>
+        <h3 class="service-title">Audit & Assurance</h3>
+        <p class="service-desc">Independent, thorough audits that build trust with stakeholders and ensure financial accuracy across all levels.</p>
+        <div class="service-points">
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Statutory audits under the Companies Act</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Tax audits under Section 44AB</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Internal audits & process reviews</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Audit reports for banks and regulatory bodies</span></div>
+        </div>
+      </div>
+
+      <div class="service-card fade-up">
+        <span class="service-icon">◈</span>
+        <h3 class="service-title">Tax Planning & Filing</h3>
+        <p class="service-desc">Strategic tax structuring for individuals and businesses. We minimize liability and maximize compliance with precision.</p>
+        <div class="service-points">
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">ITR filing for individuals, firms & companies</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Advance tax computation & planning</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Capital gains & investment tax advisory</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">TDS computation, filing & compliance</span></div>
+        </div>
+      </div>
+
+      <div class="service-card fade-up">
+        <span class="service-icon">◬</span>
+        <h3 class="service-title">GST & Compliance</h3>
+        <p class="service-desc">End-to-end GST management, registrations, returns, and regulatory filings handled with zero ambiguity.</p>
+        <div class="service-points">
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">GST registration & amendment</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Monthly/quarterly GSTR-1, GSTR-3B filing</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Annual GST return (GSTR-9) preparation</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">GST notices, assessments & litigation support</span></div>
+        </div>
+      </div>
+
+      <div class="service-card fade-up">
+        <span class="service-icon">◫</span>
+        <h3 class="service-title">Business Advisory</h3>
+        <p class="service-desc">From incorporation to exit strategy — we provide financial intelligence that shapes smarter business decisions.</p>
+        <div class="service-points">
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Business structuring & entity selection</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Financial modelling & projections</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Funding readiness & investor reporting</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Profitability analysis & cost optimisation</span></div>
+        </div>
+      </div>
+
+      <div class="service-card fade-up">
+        <span class="service-icon">◇</span>
+        <h3 class="service-title">Incorporation & Related Services</h3>
+        <p class="service-desc">End-to-end support for company formation, registrations, and statutory compliances — from day one and beyond.</p>
+        <div class="service-points">
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Private Ltd, LLP & OPC incorporation</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">MSME, Startup India & DPIIT registration</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Shareholders agreements & MoA/AoA drafting</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Annual ROC filings & secretarial compliance</span></div>
+        </div>
+      </div>
+
+      <div class="service-card fade-up">
+        <span class="service-icon">◌</span>
+        <h3 class="service-title">Financial Advisory</h3>
+        <p class="service-desc">Personalised financial guidance to help you build, protect, and grow your wealth with clarity and confidence.</p>
+        <div class="service-points">
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Personal financial planning & goal mapping</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Investment portfolio review & advisory</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Retirement & succession planning</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Risk assessment & insurance advisory</span></div>
+        </div>
+      </div>
+
+      <div class="service-card fade-up">
+        <span class="service-icon">◮</span>
+        <h3 class="service-title">CFO Services</h3>
+        <p class="service-desc">On-demand fractional CFO expertise — forecasting, cash flow management, and financial strategy for growing firms.</p>
+        <div class="service-points">
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Cash flow forecasting & treasury management</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Board-level financial reporting</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Budgeting, variance analysis & KPI dashboards</span></div>
+          <div class="service-point"><span class="service-point-arrow">▸</span><span class="service-point-text">Fundraising support & due diligence</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- TEAM -->
+  <section class="section" id="team">
+    <div class="section-label">Who We Are</div>
+    <h2 class="section-title">The minds behind<br><em>your finances.</em></h2>
+    <div class="team-grid">
+      <div class="team-card fade-up">
+        <div class="team-avatar"><span>L</span></div>
+        <h3 class="team-name">Lokeshwar Reddy K</h3>
+        <div class="team-role">Chartered Accountant</div>
+        <div class="team-quals"><span class="team-qual">MSc — UK</span></div>
+      </div>
+      <div class="team-card fade-up">
+        <div class="team-avatar"><span>S</span></div>
+        <h3 class="team-name">Suhasini S S</h3>
+        <div class="team-role">Finance Professional</div>
+        <div class="team-quals"><span class="team-qual">ACCA</span></div>
+      </div>
+      <div class="team-card fade-up">
+        <div class="team-avatar"><span>S</span></div>
+        <h3 class="team-name">Shreyas S S</h3>
+        <div class="team-role">Finance & Strategy</div>
+        <div class="team-quals"><span class="team-qual">MBA</span><span class="team-qual">CFA — Level 1</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PRICING -->
+  <section class="section" id="pricing">
+    <div class="section-label">Transparent Pricing</div>
+    <h2 class="section-title">Clear plans,<br><em>no surprises.</em></h2>
+    <div class="pricing-grid">
+
+      <div class="pricing-card fade-up">
+        <div class="price-tier">Starter</div>
+        <div class="price-row"><span class="price-amount">₹4,999</span><span class="price-period">/ month</span></div>
+        <div class="price-tag">For freelancers & sole proprietors</div>
+        <div class="price-features">
+          <div class="price-feature">ITR Filing (Firms)</div>
+          <div class="price-feature">Quarterly GST Returns</div>
+          <div class="price-feature">Basic Bookkeeping</div>
+          <div class="price-feature">Email Support</div>
+        </div>
+        <a class="btn-ghost" href="#contact" style="width:100%;text-align:center;">Get Started</a>
+      </div>
+
+      <div class="pricing-card highlight fade-up">
+        <div class="pricing-badge">Most Popular</div>
+        <div class="price-tier">Business</div>
+        <div class="price-row"><span class="price-amount">₹14,999</span><span class="price-period">/ month</span></div>
+        <div class="price-tag">For SMEs & growing companies</div>
+        <div class="price-features">
+          <div class="price-feature">Everything in Starter</div>
+          <div class="price-feature">Company ITR & Audit</div>
+          <div class="price-feature">Monthly MIS Reports</div>
+          <div class="price-feature">TDS Filing & Compliance</div>
+          <div class="price-feature">Dedicated CA Manager</div>
+          <div class="price-feature">Priority Support</div>
+        </div>
+        <a class="btn-primary" href="#contact" style="width:100%;text-align:center;">Get Started</a>
+      </div>
+
+      <div class="pricing-card fade-up">
+        <div class="price-tier">Enterprise</div>
+        <div class="price-row"><span class="price-amount">Custom</span></div>
+        <div class="price-tag">For large businesses & groups</div>
+        <div class="price-features">
+          <div class="price-feature">Everything in Business</div>
+          <div class="price-feature">Group Consolidation</div>
+          <div class="price-feature">Statutory & Tax Audit</div>
+          <div class="price-feature">Board-level Reporting</div>
+          <div class="price-feature">Fractional CFO</div>
+          <div class="price-feature">24/7 Support</div>
+        </div>
+        <a class="btn-ghost" href="#contact" style="width:100%;text-align:center;">Contact Us</a>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACT -->
+  <section class="contact-section" id="contact">
+    <div class="contact-inner">
+      <div class="fade-up">
+        <div class="section-label">Get In Touch</div>
+        <h2 class="section-title" style="margin-bottom:24px;">Let's talk about<br><em>your finances.</em></h2>
+        <p class="contact-sub">Whether you're filing taxes, launching a business, or planning for the future — we're here to make the numbers work for you.</p>
+        <div class="contact-details">
+          <div class="contact-item">
+            <span class="contact-icon">◈</span>
+            <div>
+              <div class="contact-label">Office</div>
+              <div class="contact-value">#201, The Spacious, Yelahanka
+Bengaluru</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-icon">◉</span>
+            <div>
+              <div class="contact-label">Phone</div>
+              <div class="contact-value">+91 78929 01573</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-icon">◫</span>
+            <div>
+              <div class="contact-label">Email</div>
+              <div class="contact-value">calokeshwar@gmail.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade-up">
+        <div class="contact-form" id="contactForm">
+          <div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div>
+          <div class="form-group">
+            <input class="form-input" type="text" id="fname" placeholder="Your Name" />
+          </div>
+          <div class="form-group">
+            <input class="form-input" type="email" id="femail" placeholder="Email Address" />
+          </div>
+          <div class="form-group">
+            <textarea class="form-input" id="fmessage" rows="4" placeholder="How can we help you?"></textarea>
+          </div>
+          <button class="btn-primary" onclick="handleSubmit()">Send Message →</button>
+        </div>
+        <div class="success-box" id="successBox">
+          <div class="success-icon">◈</div>
+          <h3 class="success-title">Message Received</h3>
+          <p class="success-text">We'll be in touch within one business day. Thank you for reaching out.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-left">© 2025 ANCHOR&AIM CHARTERED ACCOUNTANTS</span>
+    <span class="footer-right">ICAI REG. NO. 123456W</span>
+  </footer>
+
+  <script>
+    // Sticky nav
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationDelay = (entry.target.dataset.delay || 0) + 'ms';
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach((el, i) => {
+      el.dataset.delay = (i % 4) * 80;
+      observer.observe(el);
+    });
+
+    // Form submit
+    function handleSubmit() {
+      const name = document.getElementById('fname').value;
+      const email = document.getElementById('femail').value;
+      if (name && email) {
+        document.getElementById('contactForm').style.display = 'none';
+        document.getElementById('successBox').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
